@@ -1,2 +1,7 @@
 name: appsync-learn
 schema: schema.api.graphql
+authenticationType: AMAZON_COGNITO_USER_POOLS
+userPoolConfig:
+  awsRegion: ap-southeast-1
+  defaultAction: ALLOW
+  userPoolId: !Ref CognitoUserPool

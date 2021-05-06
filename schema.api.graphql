@@ -146,7 +146,6 @@ type Retweet implements ITweet {
   retweetOf: ITweet!
 }
 
-
 type TweetsPage {
   tweets: [ITweet!]
   nextToken: String

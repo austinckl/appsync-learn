@@ -18,8 +18,12 @@
   },
   "homepage": "https://github.com/austinckl/appsync-learn#readme",
   "devDependencies": {
+    "aws-sdk": "^2.901.0",
     "serverless": "2.4.0",
     "serverless-appsync-plugin": "^1.11.3",
     "serverless-iam-roles-per-function": "^3.1.0"
+  },
+  "dependencies": {
+    "chance": "^1.1.7"
   }
 }

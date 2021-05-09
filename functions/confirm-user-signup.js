@@ -5,6 +5,7 @@ const chance = new Chance();
 
 const { USERS_TABLE } = process.env;
 
+// Congnito PostConfirmation event
 module.exports.handler = async (event) => {
   if (event.triggerSource === 'PostConfirmation_ConfirmSignUp') {
     const name = event.request.userAttributes.name;
@@ -28,7 +29,7 @@ module.exports.handler = async (event) => {
 
     await DocumentClient.put({
       TableName: USERS_TABLE,
-      Item: user.createdAt,
+      Item: user,
       ConditionExpression: 'attribute_not_exists(id)',
     }).promise();
   } else {

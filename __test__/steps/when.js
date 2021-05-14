@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-mapper/mapper');
 const velocityTemplate = require('amplify-velocity-template');
+const GraphQL = require('../lib/graphql');
 
 const invoke_confirmUserSignup = async (username, name, email) => {
   const handler = require('../../functions/confirm-user-signup').handler;
@@ -65,6 +66,29 @@ const user_signup = async (name, email, password) => {
   };
 };
 
+const user_login = async (username, password) => {
+  const cognito = new AWS.CognitoIdentityServiceProvider();
+  const clientId = process.env.WEB_COGNITO_USER_POOL_CLIENT_ID;
+
+  const auth = await cognito
+    .initiateAuth({
+      AuthFlow: 'USER_PASSWORD_AUTH',
+      ClientId: clientId,
+      AuthParameters: {
+        USERNAME: username,
+        PASSWORD: password,
+      },
+    })
+    .promise();
+
+  console.log(`[${username}] - signed in`);
+
+  return {
+    idToken: auth.AuthenticationResult.IdToken,
+    accessToken: auth.AuthenticationResult.AccessToken,
+  };
+};
+
 const invoice_an_appsync_template = (templatePath, context) => {
   const template = fs.readFileSync(templatePath, { encoding: 'utf-8' });
   const ast = velocityTemplate.parse(template);
@@ -76,8 +100,41 @@ const invoice_an_appsync_template = (templatePath, context) => {
   return JSON.parse(compiler.render(context));
 };
 
+const user_call_getMyProfile = async (auth) => {
+  const getMyProfile = `query MyQuery {
+    getMyProfile {
+      backgroundImageUrl
+      bio
+      createdAt
+      birthdate
+      followersCount
+      followingCount
+      id
+      imageUrl
+      location
+      likesCount
+      name
+      screenName
+      tweetsCount
+      website
+    }
+  }`;
+
+  const data = await GraphQL(
+    process.env.API_URL,
+    getMyProfile,
+    {},
+    auth.accessToken
+  );
+  const profile = data.getMyProfile;
+
+  return profile;
+};
+
 module.exports = {
   invoke_confirmUserSignup,
   user_signup,
+  user_login,
   invoice_an_appsync_template,
+  user_call_getMyProfile,
 };

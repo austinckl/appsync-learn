@@ -101,7 +101,7 @@ const invoke_an_appsync_template = (templatePath, context) => {
 };
 
 const user_call_getMyProfile = async (auth) => {
-  const getMyProfile = `query MyQuery {
+  const getMyProfile = `query getMyProfile {
     getMyProfile {
       backgroundImageUrl
       bio
@@ -132,7 +132,7 @@ const user_call_getMyProfile = async (auth) => {
 };
 
 const user_call_editMyProfile = async (auth, input) => {
-  const editMyProfile = `mutation MyMutation($input: ProfileInput!) {
+  const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
     editMyProfile(newProfile: $input) {
       backgroundImageUrl
       bio

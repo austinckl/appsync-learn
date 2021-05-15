@@ -18,9 +18,9 @@
       ":location" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.location),
       ":website" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.website),
       ":birthdate" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.birthdate)
-    },
-    "condition" : {
-      "expression" : "attribute_exists(id)"
-    }
+    }    
+  },
+  "condition" : {
+    "expression" : "attribute_exists(id)"
   }
 }

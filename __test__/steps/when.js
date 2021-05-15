@@ -89,7 +89,7 @@ const user_login = async (username, password) => {
   };
 };
 
-const invoice_an_appsync_template = (templatePath, context) => {
+const invoke_an_appsync_template = (templatePath, context) => {
   const template = fs.readFileSync(templatePath, { encoding: 'utf-8' });
   const ast = velocityTemplate.parse(template);
   const compiler = new velocityTemplate.Compile(ast, {
@@ -135,6 +135,6 @@ module.exports = {
   invoke_confirmUserSignup,
   user_signup,
   user_login,
-  invoice_an_appsync_template,
+  invoke_an_appsync_template,
   user_call_getMyProfile,
 };

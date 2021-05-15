@@ -3,7 +3,7 @@ const velocityUtil = require('amplify-appsync-simulator/lib/velocity/util');
 
 const random_user = () => {
   const firstName = chance.first({ nationality: 'en' });
-  const lastName = chance.first({ nationality: 'en' });
+  const lastName = chance.last({ nationality: 'en' });
   const suffix = chance.string({
     length: 4,
     pool: 'abcdefghijklmnopqrstuvwxyz',

@@ -1,8 +1,7 @@
 const given = require('../../steps/given');
 const when = require('../../steps/when');
-const then = require('../../steps/then');
 
-describe('Given an authenticated user', () => {
+describe('Get my profile e2e testing', () => {
   let user, auth;
   beforeAll(async () => {
     const { name, email, password } = given.random_user();

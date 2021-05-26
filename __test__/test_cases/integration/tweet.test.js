@@ -28,13 +28,5 @@ describe('Tweet integration testing', () => {
     it('tweetsCount in users table increment to 1', async () => {
       await then.tweetsCount_is_updated_in_UsersTable(user.username, 1);
     });
-
-    // Given authenticated user
-
-    // When invoke tweet
-
-    // Then tweet exist in tweet table
-    // Then tweet exist in timeline table
-    // Then user tweetCount increment in user table
   });
 });

@@ -218,6 +218,32 @@ const user_call_getImageUploadUrl = async (auth, extension, contentType) => {
   return url;
 };
 
+const user_call_tweet = async (auth, text) => {
+  const tweet = `mutation tweet($text: String!) {
+    tweet(text: $text) {
+      id
+      createdAt
+      text
+      replies
+      likes
+      retweets
+    }
+  }`;
+  const variables = {
+    text,
+  };
+
+  const data = await GraphQL(
+    process.env.API_URL,
+    tweet,
+    variables,
+    auth.accessToken
+  );
+  const newTweet = data.tweet;
+
+  return newTweet;
+};
+
 module.exports = {
   invoke_confirmUserSignup,
   invoke_getImageUplaodUrl,
@@ -228,4 +254,5 @@ module.exports = {
   user_call_getMyProfile,
   user_call_editMyProfile,
   user_call_getImageUploadUrl,
+  user_call_tweet,
 };

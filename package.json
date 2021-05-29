@@ -8,7 +8,8 @@
     "export:env": "sls export-env && sls manifest",
     "test:integration": "jest --verbose ./__test__/test_cases/integration",
     "test:e2e": "jest --verbose ./__test__/test_cases/e2e",
-    "test:unit": "jest --verbose ./__test__/test_cases/unit"
+    "test:unit": "jest --verbose ./__test__/test_cases/unit",
+    "test": "jest"
   },
   "repository": {
     "type": "git",

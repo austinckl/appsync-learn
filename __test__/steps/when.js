@@ -244,6 +244,39 @@ const user_call_tweet = async (auth, text) => {
   return newTweet;
 };
 
+const user_call_getTweets = async (auth, userId, limit, nextToken) => {
+  const getTweets = `query getTweets($userId: ID!, $limit: Int!, $nextToken: String) {
+    getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
+      nextToken
+      tweets{
+        id
+        createdAt
+        ... on Tweet {
+          text
+          replies
+          likes
+          retweets
+        }
+      }
+    }
+  }`;
+  const variables = {
+    userId,
+    limit,
+    nextToken,
+  };
+
+  const data = await GraphQL(
+    process.env.API_URL,
+    getTweets,
+    variables,
+    auth.accessToken
+  );
+  const getTweetsResp = data.getTweets;
+
+  return getTweetsResp;
+};
+
 module.exports = {
   invoke_confirmUserSignup,
   invoke_getImageUplaodUrl,
@@ -255,4 +288,5 @@ module.exports = {
   user_call_editMyProfile,
   user_call_getImageUploadUrl,
   user_call_tweet,
+  user_call_getTweets,
 };

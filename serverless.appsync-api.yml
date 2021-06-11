@@ -19,7 +19,7 @@ mappingTemplates:
     field: getTweets
     dataSource: tweetsTable
   - type: Query
-    field: getMyTimeLine
+    field: getMyTimeline
     dataSource: timelinesTable
 
   - type: Mutation

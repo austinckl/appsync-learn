@@ -27,23 +27,46 @@ describe('Tweet e2e testing', () => {
       });
     });
 
-    it('Should able to getTweets', async () => {
-      const { tweets, nextToken } = await when.user_call_getTweets(
-        auth,
-        user.username,
-        25
-      );
+    describe('When call getTweets', () => {
+      it('Tweet should exist in tweets array', async () => {
+        const { tweets, nextToken } = await when.user_call_getTweets(
+          auth,
+          user.username,
+          25
+        );
 
-      expect(nextToken).toBeNull();
-      expect(tweets.length).toEqual(1);
-      expect(tweets[0]).toEqual(tweet);
+        expect(nextToken).toBeNull();
+        expect(tweets.length).toEqual(1);
+        expect(tweets[0]).toEqual(tweet);
+      });
+
+      it('Should throw exceed 25 tweet per page limit error', async () => {
+        await expect(
+          when.user_call_getTweets(auth, user.username, 26)
+        ).rejects.toMatchObject({
+          message: expect.stringMatching('max limit is 25'),
+        });
+      });
     });
 
-    it('Should throw exceed 25 tweet per page limit error', async () => {
-      await expect(
-        when.user_call_getTweets(auth, user.username, 26)
-      ).rejects.toMatchObject({
-        message: expect.stringMatching('max limit is 25'),
+    describe('When call getMyTimeline', () => {
+      it('Tweet should exist in tweets array', async () => {
+        const { tweets, nextToken } = await when.user_call_getMyTimeline(
+          auth,
+          25
+        );
+
+        expect(nextToken).toBeNull();
+        expect(tweets.length).toEqual(1);
+        expect(tweets[0]).toEqual(tweet);
+      });
+
+      it('Should throw exceed 25 tweet per page limit error', async () => {
+        await expect(
+          when.user_call_getMyTimeline(auth, 26)
+        ).rejects.toMatchObject({
+          message: expect.stringMatching('max limit is 25'),
+        });
       });
     });
   });

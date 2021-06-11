@@ -277,6 +277,38 @@ const user_call_getTweets = async (auth, userId, limit, nextToken) => {
   return getTweetsResp;
 };
 
+const user_call_getMyTimeline = async (auth, limit, nextToken) => {
+  const getMyTimeline = `query getMyTimeline($limit: Int!, $nextToken: String) {
+    getMyTimeline(limit: $limit, nextToken: $nextToken) {
+      nextToken
+      tweets{
+        id
+        createdAt
+        ... on Tweet {
+          text
+          replies
+          likes
+          retweets
+        }
+      }
+    }
+  }`;
+  const variables = {
+    limit,
+    nextToken,
+  };
+
+  const data = await GraphQL(
+    process.env.API_URL,
+    getMyTimeline,
+    variables,
+    auth.accessToken
+  );
+  const getMyTimelineResp = data.getMyTimeline;
+
+  return getMyTimelineResp;
+};
+
 module.exports = {
   invoke_confirmUserSignup,
   invoke_getImageUplaodUrl,
@@ -289,4 +321,5 @@ module.exports = {
   user_call_getImageUploadUrl,
   user_call_tweet,
   user_call_getTweets,
+  user_call_getMyTimeline,
 };

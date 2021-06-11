@@ -19,13 +19,14 @@ const random_user = () => {
   };
 };
 
-const an_appsync_context = (identity, args, result) => {
+const an_appsync_context = (identity, args, result, source) => {
   const util = velocityUtil.create([], new Date(), Object());
   const context = {
     identity,
     args,
     arguments: args,
     result,
+    source,
   };
 
   return {

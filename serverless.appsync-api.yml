@@ -38,6 +38,9 @@ mappingTemplates:
   - type: Tweet
     field: profile
     dataSource: usersTable
+  - type: Tweet
+    field: liked
+    dataSource: likesTable
   - type: TimelinePage
     field: tweets
     dataSource: tweetsTable
@@ -57,6 +60,10 @@ dataSources:
     name: timelinesTable
     config:
       tableName: !Ref TimelinesTable
+  - type: AMAZON_DYNAMODB
+    name: likesTable
+    config:
+      tableName: !Ref LikesTable
   - type: AMAZON_DYNAMODB
     name: likesMutation
     config:

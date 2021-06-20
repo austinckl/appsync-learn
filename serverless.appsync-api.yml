@@ -65,6 +65,12 @@ dataSources:
         - Effect: Allow
           Action: dynamodb:PutItem
           Resource: !GetAtt LikesTable.Arn
+        - Effect: Allow
+          Action: dynamodb:UpdateItem
+          Resource: !GetAtt TweetsTable.Arn
+        - Effect: Allow
+          Action: dynamodb:UpdateItem
+          Resource: !GetAtt DemoUsersTable.Arn
 
   - type: AWS_LAMBDA
     name: getImageUploadUrlFunction

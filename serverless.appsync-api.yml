@@ -30,6 +30,9 @@ mappingTemplates:
     dataSource: tweetFunction
     request: false
     response: false
+  - type: Mutation
+    field: like
+    dataSource: likesMutation
 
   # NESTED FIELDS
   - type: Tweet
@@ -54,6 +57,14 @@ dataSources:
     name: timelinesTable
     config:
       tableName: !Ref TimelinesTable
+  - type: AMAZON_DYNAMODB
+    name: likesMutation
+    config:
+      tableName: !Ref LikesTable
+      iamRoleStatements:
+        - Effect: Allow
+          Action: dynamodb:PutItem
+          Resource: !GetAtt LikesTable.Arn
 
   - type: AWS_LAMBDA
     name: getImageUploadUrlFunction
@@ -66,3 +77,5 @@ dataSources:
 
 substitutions: # allows to pass variables from here to velocity templates
   TweetsTable: !Ref TweetsTable
+  UsersTable: !Ref DemoUsersTable
+  LikesTable: !Ref LikesTable

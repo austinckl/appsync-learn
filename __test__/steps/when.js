@@ -3,7 +3,86 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-mapper/mapper');
 const velocityTemplate = require('amplify-velocity-template');
-const GraphQL = require('../lib/graphql');
+const { GraphQL, registerFragment } = require('../lib/graphql');
+
+const myProfileFragment = `
+fragment myProfileFields on MyProfile {
+  id
+  name
+  screenName
+  imageUrl
+  backgroundImageUrl
+  bio
+  location
+  website
+  birthdate
+  createdAt
+  followersCount
+  followingCount
+  tweetsCount
+  likesCount
+}
+`;
+
+const otherProfileFragment = `
+fragment otherProfileFields on OtherProfile {
+  id
+  name
+  screenName
+  imageUrl
+  backgroundImageUrl
+  bio
+  location
+  website
+  birthdate
+  createdAt
+  followersCount
+  followingCount
+  tweetsCount
+  likesCount
+}
+`;
+
+const iProfileFragment = `
+fragment iProfileFields on IProfile {
+  ... on MyProfile {
+    ... myProfileFields
+  }
+
+  ... on OtherProfile {
+    ... otherProfileFields
+  }
+}
+`;
+
+const tweetFragment = `
+fragment tweetFields on Tweet {
+  id
+  profile {
+    ... iProfileFields
+  }
+  createdAt
+  text
+  replies
+  likes
+  retweets
+  liked
+}
+`;
+
+const iTweetFragment = `
+fragment iTweetFields on ITweet {
+  ... on Tweet {
+    ... tweetFields
+  }
+}
+`;
+
+registerFragment('myProfileFields', myProfileFragment);
+registerFragment('otherProfileFields', otherProfileFragment);
+registerFragment('iProfileFields', iProfileFragment);
+registerFragment('tweetFields', tweetFragment);
+registerFragment('iTweetFields', iTweetFragment);
 
 const invoke_confirmUserSignup = async (username, name, email) => {
   const handler = require('../../functions/confirm-user-signup').handler;
@@ -136,20 +215,7 @@ const invoke_an_appsync_template = (templatePath, context) => {
 const user_call_getMyProfile = async (auth) => {
   const getMyProfile = `query getMyProfile {
     getMyProfile {
-      backgroundImageUrl
-      bio
-      createdAt
-      birthdate
-      followersCount
-      followingCount
-      id
-      imageUrl
-      location
-      likesCount
-      name
-      screenName
-      tweetsCount
-      website
+      ... myProfileFields
     }
   }`;
 
@@ -167,20 +233,7 @@ const user_call_getMyProfile = async (auth) => {
 const user_call_editMyProfile = async (auth, input) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
     editMyProfile(newProfile: $input) {
-      backgroundImageUrl
-      bio
-      createdAt
-      birthdate
-      followersCount
-      followingCount
-      id
-      imageUrl
-      location
-      likesCount
-      name
-      screenName
-      tweetsCount
-      website
+      ... myProfileFields
     }
   }`;
   const variables = {
@@ -221,12 +274,7 @@ const user_call_getImageUploadUrl = async (auth, extension, contentType) => {
 const user_call_tweet = async (auth, text) => {
   const tweet = `mutation tweet($text: String!) {
     tweet(text: $text) {
-      id
-      createdAt
-      text
-      replies
-      likes
-      retweets
+      ... tweetFields
     }
   }`;
   const variables = {
@@ -249,14 +297,7 @@ const user_call_getTweets = async (auth, userId, limit, nextToken) => {
     getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
       nextToken
       tweets{
-        id
-        createdAt
-        ... on Tweet {
-          text
-          replies
-          likes
-          retweets
-        }
+        ... iTweetFields
       }
     }
   }`;
@@ -282,14 +323,7 @@ const user_call_getMyTimeline = async (auth, limit, nextToken) => {
     getMyTimeline(limit: $limit, nextToken: $nextToken) {
       nextToken
       tweets{
-        id
-        createdAt
-        ... on Tweet {
-          text
-          replies
-          likes
-          retweets
-        }
+        ... iTweetFields
       }
     }
   }`;

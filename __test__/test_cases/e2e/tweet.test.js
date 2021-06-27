@@ -69,5 +69,27 @@ describe('Tweet e2e testing', () => {
         });
       });
     });
+
+    describe('When like tweet', () => {
+      beforeAll(async () => {
+        await when.user_call_like(auth, tweet.id);
+      });
+
+      it('Should see Tweet.liked = true', async () => {
+        const { tweets } = await when.user_call_getMyTimeline(auth, 25);
+
+        expect(tweets).toHaveLength(1);
+        expect(tweets[0].id).toEqual(tweet.id);
+        expect(tweets[0].liked).toEqual(true);
+      });
+
+      it('Should not allowed to like same tweet twice', async () => {
+        await expect(when.user_call_like(auth, tweet.id)).rejects.toMatchObject(
+          {
+            message: expect.stringMatching('DynamoDB transaction error'),
+          }
+        );
+      });
+    });
   });
 });

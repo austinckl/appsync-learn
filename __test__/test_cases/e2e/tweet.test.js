@@ -91,5 +91,27 @@ describe('Tweet e2e testing', () => {
         );
       });
     });
+
+    describe('When unlike tweet', () => {
+      beforeAll(async () => {
+        await when.user_call_unlike(auth, tweet.id);
+      });
+
+      it('Should see Tweet.liked = false', async () => {
+        const { tweets } = await when.user_call_getMyTimeline(auth, 25);
+
+        expect(tweets).toHaveLength(1);
+        expect(tweets[0].id).toEqual(tweet.id);
+        expect(tweets[0].liked).toEqual(false);
+      });
+
+      it('Should not allowed to unlike same tweet twice', async () => {
+        await expect(
+          when.user_call_unlike(auth, tweet.id)
+        ).rejects.toMatchObject({
+          message: expect.stringMatching('DynamoDB transaction error'),
+        });
+      });
+    });
   });
 });

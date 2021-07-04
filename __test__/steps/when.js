@@ -362,6 +362,25 @@ const user_call_like = async (auth, tweetId) => {
   return result;
 };
 
+const user_call_unlike = async (auth, tweetId) => {
+  const unlike = `mutation unlike($tweetId: ID!) {
+    unlike(tweetId: $tweetId)
+  }`;
+  const variables = {
+    tweetId,
+  };
+
+  const data = await GraphQL(
+    process.env.API_URL,
+    unlike,
+    variables,
+    auth.accessToken
+  );
+  const result = data.unlike;
+
+  return result;
+};
+
 module.exports = {
   invoke_confirmUserSignup,
   invoke_getImageUplaodUrl,
@@ -376,4 +395,5 @@ module.exports = {
   user_call_getTweets,
   user_call_getMyTimeline,
   user_call_like,
+  user_call_unlike,
 };

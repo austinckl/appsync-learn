@@ -33,6 +33,9 @@ mappingTemplates:
   - type: Mutation
     field: like
     dataSource: likesMutation
+  - type: Mutation
+    field: unlike
+    dataSource: unlikesMutation
 
   # NESTED FIELDS
   - type: Tweet
@@ -71,6 +74,20 @@ dataSources:
       iamRoleStatements:
         - Effect: Allow
           Action: dynamodb:PutItem
+          Resource: !GetAtt LikesTable.Arn
+        - Effect: Allow
+          Action: dynamodb:UpdateItem
+          Resource: !GetAtt TweetsTable.Arn
+        - Effect: Allow
+          Action: dynamodb:UpdateItem
+          Resource: !GetAtt DemoUsersTable.Arn
+  - type: AMAZON_DYNAMODB
+    name: unlikesMutation
+    config:
+      tableName: !Ref LikesTable
+      iamRoleStatements:
+        - Effect: Allow
+          Action: dynamodb:DeleteItem
           Resource: !GetAtt LikesTable.Arn
         - Effect: Allow
           Action: dynamodb:UpdateItem

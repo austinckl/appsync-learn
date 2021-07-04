@@ -44,7 +44,7 @@ mappingTemplates:
   - type: Tweet
     field: liked
     dataSource: likesTable
-  - type: TimelinePage
+  - type: UnhydratedTweetsPage
     field: tweets
     dataSource: tweetsTable
 

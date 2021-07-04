@@ -3,11 +3,11 @@ const when = require('../../steps/when');
 const chance = require('chance').Chance();
 const path = require('path');
 
-describe('TimelinePage.tweets.request template', () => {
+describe('UnhydratedTweetsPage.tweets.request template', () => {
   it('Should return empty array when source.tweets is empty', () => {
     const templatePath = path.resolve(
       __dirname,
-      '../../../mapping-templates/TimelinePage.tweets.request.vtl'
+      '../../../mapping-templates/UnhydratedTweetsPage.tweets.request.vtl'
     );
     const username = chance.guid();
     const context = given.an_appsync_context(
@@ -24,7 +24,7 @@ describe('TimelinePage.tweets.request template', () => {
   it('Should convert timeline tweets', () => {
     const templatePath = path.resolve(
       __dirname,
-      '../../../mapping-templates/TimelinePage.tweets.request.vtl'
+      '../../../mapping-templates/UnhydratedTweetsPage.tweets.request.vtl'
     );
     const username = chance.guid();
     const tweetId = chance.guid();

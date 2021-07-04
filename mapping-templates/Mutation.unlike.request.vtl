@@ -10,7 +10,7 @@
         "tweetId": $util.dynamodb.toDynamoDBJson($context.arguments.tweetId)
       },
       "condition": {
-        "expression": "attribute_not_exists(tweetId)"
+        "expression": "attribute_exists(tweetId)"
       }
     },
     {

@@ -90,6 +90,28 @@ describe('Tweet e2e testing', () => {
           }
         );
       });
+
+      describe('When call getLikes', () => {
+        it('Tweet should exist in tweets array', async () => {
+          const { tweets, nextToken } = await when.user_call_getLikes(
+            auth,
+            user.username,
+            25
+          );
+
+          expect(nextToken).toBeNull();
+          expect(tweets.length).toEqual(1);
+          expect(tweets[0]).toMatchObject({
+            ...tweet,
+            liked: true,
+            likes: 1,
+            profile: {
+              ...tweet.profile,
+              likesCount: 1,
+            },
+          });
+        });
+      });
     });
 
     describe('When unlike tweet', () => {
@@ -110,6 +132,19 @@ describe('Tweet e2e testing', () => {
           when.user_call_unlike(auth, tweet.id)
         ).rejects.toMatchObject({
           message: expect.stringMatching('DynamoDB transaction error'),
+        });
+      });
+
+      describe('When call getLikes', () => {
+        it('Should show empty tweets array', async () => {
+          const { tweets, nextToken } = await when.user_call_getLikes(
+            auth,
+            user.username,
+            25
+          );
+
+          expect(nextToken).toBeNull();
+          expect(tweets.length).toEqual(0);
         });
       });
     });

@@ -39,6 +39,11 @@ mappingTemplates:
   - type: Mutation
     field: unlike
     dataSource: unlikesMutation
+  - type: Mutation
+    field: retweet
+    dataSource: retweetFunction
+    request: false
+    response: false
 
   # NESTED FIELDS
   - type: Tweet
@@ -115,6 +120,10 @@ dataSources:
     name: tweetFunction
     config:
       functionName: tweet
+  - type: AWS_LAMBDA
+    name: retweetFunction
+    config:
+      functionName: retweet
 
 substitutions: # allows to pass variables from here to velocity templates
   TweetsTable: !Ref TweetsTable

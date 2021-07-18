@@ -21,7 +21,7 @@ module.exports.handler = async (event) => {
   }).promise();
 
   const tweet = tweetResp.Item;
-  if (!!tweet) {
+  if (!tweet) {
     throw new Error('Tweet is not found');
   }
 

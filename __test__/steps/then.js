@@ -1,5 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
+const _ = require('lodash');
 const fs = require('fs');
 const DynamoDB = require('aws-sdk/clients/dynamodb');
 const DocumentClient = new DynamoDB.DocumentClient();
@@ -62,6 +63,29 @@ const tweet_exists_in_TweetsTable = async (id) => {
   return response.Item;
 };
 
+const retweet_exists_in_TweetsTable = async (userId, tweetId) => {
+  console.log(
+    `looking for retweet of [${tweetId}] in table [${process.env.TWEETS_TABLE}]`
+  );
+
+  const response = await DocumentClient.query({
+    TableName: process.env.TWEETS_TABLE,
+    IndexName: 'retweetByCreator',
+    KeyConditionExpression: 'creator = :userId AND retweetOf = :tweetId',
+    ExpressionAttributeValues: {
+      ':userId': userId,
+      ':tweetId': tweetId,
+    },
+    Limit: 1,
+  }).promise();
+
+  const retweet = _.get(response, 'Items.0');
+
+  expect(retweet).toBeTruthy();
+
+  return retweet;
+};
+
 const tweet_exists_in_TimelinesTable = async (userId, tweetId) => {
   console.log(
     `looking for tweet [${tweetId}] for user [${userId}] in table [${process.env.TIMELINES_TABLE}]`
@@ -69,6 +93,24 @@ const tweet_exists_in_TimelinesTable = async (userId, tweetId) => {
 
   const response = await DocumentClient.get({
     TableName: process.env.TIMELINES_TABLE,
+    Key: {
+      userId,
+      tweetId,
+    },
+  }).promise();
+
+  expect(response.Item).toBeTruthy();
+
+  return response.Item;
+};
+
+const retweet_exists_in_RetweetsTable = async (userId, tweetId) => {
+  console.log(
+    `looking for retweet of [${tweetId}] for user [${userId}] in table [${process.env.RETWEETS_TABLE}]`
+  );
+
+  const response = await DocumentClient.get({
+    TableName: process.env.RETWEETS_TABLE,
     Key: {
       userId,
       tweetId,
@@ -94,11 +136,28 @@ const tweetsCount_is_updated_in_UsersTable = async (userId, tweetsCount) => {
   return;
 };
 
+const retweetsCount_is_updated_in_TweetsTable = async (tweetId, count) => {
+  const response = await DocumentClient.get({
+    TableName: process.env.TWEETS_TABLE,
+    Key: {
+      id: tweetId,
+    },
+  }).promise();
+
+  expect(response.Item).toBeTruthy();
+  expect(response.Item.retweets).toEqual(count);
+
+  return;
+};
+
 module.exports = {
   user_exists_in_UsersTable,
   user_can_upload_image_to_url,
   user_can_download_image_from_url,
   tweet_exists_in_TweetsTable,
+  retweet_exists_in_TweetsTable,
   tweet_exists_in_TimelinesTable,
+  retweet_exists_in_RetweetsTable,
   tweetsCount_is_updated_in_UsersTable,
+  retweetsCount_is_updated_in_TweetsTable,
 };

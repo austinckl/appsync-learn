@@ -143,6 +143,22 @@ const invoke_tweet = async (username, text) => {
   return await handler(event, context);
 };
 
+const invoke_retweet = async (username, tweetId) => {
+  const handler = require('../../functions/retweet').handler;
+
+  const context = {};
+  const event = {
+    identity: {
+      username,
+    },
+    arguments: {
+      tweetId,
+    },
+  };
+
+  return await handler(event, context);
+};
+
 const user_signup = async (name, email, password) => {
   const cognito = new AWS.CognitoIdentityServiceProvider();
 
@@ -425,6 +441,7 @@ module.exports = {
   invoke_confirmUserSignup,
   invoke_getImageUplaodUrl,
   invoke_tweet,
+  invoke_retweet,
   user_signup,
   user_login,
   invoke_an_appsync_template,

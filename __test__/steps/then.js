@@ -104,6 +104,24 @@ const tweet_exists_in_TimelinesTable = async (userId, tweetId) => {
   return response.Item;
 };
 
+const tweet_not_exists_in_TimelinesTable = async (userId, tweetId) => {
+  console.log(
+    `looking for tweet [${tweetId}] for user [${userId}] in table [${process.env.TIMELINES_TABLE}]`
+  );
+
+  const response = await DocumentClient.get({
+    TableName: process.env.TIMELINES_TABLE,
+    Key: {
+      userId,
+      tweetId,
+    },
+  }).promise();
+
+  expect(response.Item).toBeUndefined();
+
+  return;
+};
+
 const retweet_exists_in_RetweetsTable = async (userId, tweetId) => {
   console.log(
     `looking for retweet of [${tweetId}] for user [${userId}] in table [${process.env.RETWEETS_TABLE}]`
@@ -157,6 +175,7 @@ module.exports = {
   tweet_exists_in_TweetsTable,
   retweet_exists_in_TweetsTable,
   tweet_exists_in_TimelinesTable,
+  tweet_not_exists_in_TimelinesTable,
   retweet_exists_in_RetweetsTable,
   tweetsCount_is_updated_in_UsersTable,
   retweetsCount_is_updated_in_TweetsTable,
